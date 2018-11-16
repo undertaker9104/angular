@@ -1,4 +1,5 @@
-import { Component, OnInit , Input} from '@angular/core';
+import { Component, OnInit , Output} from '@angular/core';
+import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-c1',
@@ -8,6 +9,7 @@ import { Component, OnInit , Input} from '@angular/core';
 export class C1Component implements OnInit {
   id: String = '';
   name: String = '';
+
 
   constructor() { }
 

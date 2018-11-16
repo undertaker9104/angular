@@ -1,0 +1,56 @@
+<div>
+  <h3  style="margin-left: 10%;">客戶持卡狀態查詢 <span style="margin-left: 1%;">(G00-21)</span></h3>
+    <div>
+      <label for="CDKIND">
+        1.卡片種類：<input  type="text" name="CDKIND" id="CDKIND" [(ngModel)]="g0021InputVo.CDKIND">
+        (0-ATM卡,1-IC卡)
+      </label>
+    </div>
+    <div>
+      <label for="ACTNO1">
+         2帳    號： <input  type="text" name="ACTNO1" id="ACTNO1" [(ngModel)]="g0021InputVo.ACTNO" maxlength="12">
+      </label>
+      <label for="PIDNO">
+          3.身分證字號：<input type="text" name="PIDNO" id="PIDNO" [(ngModel)]="g0021InputVo.PIDNO" maxlength="10">
+      </label>
+    </div>
+    <button (click)="onClick()">查詢</button>
+</div>
+
+<div *ngIf="g0021OutputVo">
+  <h3>客戶持卡狀態查詢 </h3>
+  1.卡片種類：{{g0021InputVo.CDKIND}} <br>
+  2.帳    號：{{g0021InputVo.ACTNO}}3.身分證字號：{{g0021InputVo.PIDNO}} <br>
+  4.姓    名：{{g0021OutputVo.NAME}}<br>
+  5.地    址：{{g0021OutputVo.ADDR}} <br>
+  <div>
+    <table>
+      <tr>
+        <th>帳      號 </th>
+        <th>卡片序號</th>
+        <th>卡片狀態</th>
+        <th>註銷原因</th>
+        <th>異動日期</th>
+        <th>異動時間</th>
+        <th>櫃員</th>
+        <th>申請序號</th>
+        <th>信號狀態</th>
+        <th>收件編號</th>
+      </tr>
+      <tr *ngFor="let output of g0021OutputVo.LOOPVO">
+        <td>{{output.ACTNOT}}</td>
+        <td>{{output.SEQNO}}</td>
+        <td>{{output.CDSTUS}}</td>
+        <td>{{output.HOTTYPE}}</td>
+        <td>{{output.STUSDAT}}</td>
+        <td>{{output.STUSTM}}</td>
+        <td>{{output.WSNO}}</td>
+        <td>{{output.APPSEQ}}</td>
+        <td>{{output.STATUS}}</td>
+        <td>{{output.RCVNO}}</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
