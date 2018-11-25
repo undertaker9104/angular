@@ -1,0 +1,41 @@
+<div>
+  <div style="margin-left: 10%;margin-bottom: 1%;">
+      <h3>客戶持卡狀態查詢</h3>
+  </div>
+  <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm, $event)">
+    <div>
+      <label for="CDKIND">
+        1.卡片種類：
+        <input  type="text" name="CDKIND" id="CDKIND" [(ngModel)]="input.CDKIND" #CDKIND="ngModel" required appCardValidatorDirective>
+        (0-ATM卡,1-IC卡)
+      </label>
+    </div>
+    <div>
+      <label for="ACTNO1">
+          2.帳    號：
+          <input  type="text" name="ACTNO1" id="ACTNO1" [(ngModel)]="input.ACTNO1" #ACTN01="ngModel">
+      </label>
+      <label for="PIDNO">
+          3.身分證字號：
+          <input type="text" name="PIDNO" id="PIDNO" [(ngModel)]="input.PIDNO" #PIDNO="ngModel" appIdValidatorDirective required>
+      </label>
+    </div>
+    <div *ngIf="CDKIND.invalid && (CDKIND.dirty)">
+      <div *ngIf="CDKIND.errors.required" style="color: red">
+        項目代號不可為空
+      </div>
+      <div *ngIf="CDKIND.errors" style="color: red">
+        項目代號錯誤
+      </div>
+    </div>
+    <div *ngIf="PIDNO.invalid && (PIDNO.dirty)">
+      <div *ngIf="PIDNO.errors" style="color: red">
+        身分證字號格式錯誤
+      </div>
+      <div *ngIf="PIDNO.errors.required" style="color: red">
+        身分證不得為空白
+      </div>
+    </div>
+    <button type="submit">查詢</button>
+  </form>
+</div>

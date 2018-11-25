@@ -18,7 +18,7 @@ export class HttpService {
    * @memberOf G0021HttpService
    */
   public request(inputVO: G0021InputVO): Observable<G0021OutputVO> {
-    const url = 'http://192.168.43.247:8080/Test/g0021';
+    const url = 'http://localhost:8080/Test/g0021';
     return this.http.post<G0021OutputVO>(url, inputVO);
   }
 }

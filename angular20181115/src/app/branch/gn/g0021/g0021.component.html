@@ -14,9 +14,11 @@
           3.身分證字號：<input type="text" name="PIDNO" id="PIDNO" [(ngModel)]="g0021InputVo.PIDNO" maxlength="10">
       </label>
     </div>
+    <div style="color:red">
+      {{error}}
+    </div>
     <button (click)="onClick()">查詢</button>
 </div>
-
 <div *ngIf="g0021OutputVo">
   <h3>客戶持卡狀態查詢 </h3>
   1.卡片種類：{{g0021InputVo.CDKIND}} <br>

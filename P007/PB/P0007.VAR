@@ -1,0 +1,129 @@
+1,045,1
+09
+"0106            ┌────────────────┐              "
+"0206            │  依實際交易日查詢往來明細資料  │     (P00-07) "
+"0306  ┌────┴────────────────┴────────────┐"
+"0406  │  1.帳    號:                    2.摘    要: S07                    │"
+"0506  │  3.戶    名:                                                       │"
+"0606  │  4.查詢起日:                                                       │"
+"0706  │                                                                    │"
+"0806  │  5.查詢止日:                                                       │"
+"0906  └──────────────────────────────────┘"
+<<<<.../**VER::1.8**/
+#ACTNO   X 12  10424It($ACTNO)@V(NB)J(#APNO)H(#ACTNO)T($ACTNO=#ACTNO) !帳號 (聯行刷卡控管、不可代它行取消)
+#APNO    X  3  1    ST(#ACTNO,4,3)V(MSG,科目別錯誤,!APNUMT1)  !科目別
+!****[RIM:V0033]*****
+#FUNCD   A  2  1    ST(02)                                                      !01:以統編查詢 02:以帳號查詢，帳號名地檔優先 03:戶籍名地檔優先 04:只查帳號名地檔 05:只查戶籍名地檔
+#CIFKEY  X 10  1    ST(          )
+#RIM33   X  1  1    ST($HTXSEQ=000)T($TRANCD=GM)T($WSTYPE=0)T($TXCD=V00)T($APTYPE=V)T($APCODE=00)T($DSCPT=S33  )T($STXNO=33)|
+                     T($ACNO=#ACTNO+  )T($TXTYPE=  )T($NBCD=5)T($CURR=0)T($AMT=0)S(09101,07,$TIM_LBL,#FUNCD,#CIFKEY,#ACTNO)  !調 V0033 全部資料(ROM-TEXT可參考 V0033 交易)
+#RNAME   X 54  10524SR(011,054)                                !姓名
+!****[RIM:V0033 End]***** 
+#CHKDTEX N  8  1    SE($DATE-100)                             !一個月內(年月日)
+#CHKYY   X  3  1    ST(#CHKDTEX,2,3)                          !年
+#CHKMM   X  2  1    ST(#CHKDTEX,5,2)                          !月
+#CHKDD   X  2  1    ST(#CHKDTEX,7,2)                          !日
+#CHKYY1  N  3  1    Sj(#CHKMM>12,E{#CHKYY+1}T{#CHKYY})        !判斷跨年
+#CHKMM1  X  2  1    Sj(#CHKMM>12,T{#CHKMM=01}T{#CHKMM})       !設定檢查日期
+#CHKDTE  X  7  1    ST(#CHKYY1+#CHKMM1+#CHKDD)                !設定檢查日期
+#INQBG   D  7  10624I@W(#INQBG)                                          !查詢起日
+#INQED   D  7  10824I@W(#INQED)V(MSG,止日應大於等於起日,#INQBG,$DATE7)   !查詢訖日
+#INQBGT  N  8  1    ST(#INQBG)
+#INQEDT  N  8  1    ST(#INQED)
+#FILLER  N  6  1    S                                         !保留
+#CTNO    X  8  1    S                                         !存單號碼
+#ITEMNO  X  2  1    S                                         !項目代號
+#AGRD    X  3  1    S                                         !綜存自動轉存科目
+#INTID   X  1  1    S                                         !利率區分代號
+#DISCD   N  3.31    S                                         !正負號加減碼
+#PERIOD  N  2  1    S                                         !期別
+#RETURN  X 60  1    S                                         ! 折返資料(102325-000)
+#BOXCNT  N  2  1    T                                         !筆數
+#DATE    N  8  1    T                                         !交易日期
+#TXTIME  N  6  1    T                                         !交易時間
+#OBRNO   X  3  1    T                                         !輸入行別
+#OWSNO   X  4  1    T                                         !櫃員台機序號
+#OTLRNO  X  2  1    T                                         !櫃員編號
+#ODSCPT  X  5  1    T                                         !交易摘要
+#OTXAMT  S 12.21    T                                         !交易金額
+#OCRDB   X  1  1    T@j(#ODSCPT=LCBAL,T{#OCRDB=9})            !借貸記號
+#OHCODE  X  1  1    T                                         !更正記號
+#OCKNO   X  7  1    T                                         !支票號碼
+#OAVBAL  S 12.21    T                                         !可抵用餘額
+#DSPTYPE A  1  1    TT($DSPTPFG=S)                            !備註型式
+#DSPTKD  X  3  1    T                                         !備註種類
+#DSPTEXT M 26  1    T@Z(18, )T($DSPTPFG=#DSPTYPE)j(#DSPTYPE?9,T{#ODSCPT})j(#DSPTYPE=9,T{#DSPTEXT})T($DSCPT_X=#DSPTEXT)  !摘要列印 (中文取碼改為一次取，否則一導致列印異常)
+!-- _dscpt2chinese(1);
+#CHIMEMO X 16  1    Pa( )T($CHIMEMO)@
+#DSPTXTP X 26  1    Pa( )C(5#DSPTYPE?9,T{#DSPTEXT},T{#CHIMEMO},)
+#OPBRNO  A  3  1    T                                         !對方行
+#OPACTNO X 16  1    T                                         !對方帳號
+!!!
+#INIT    X  1  1    TT(#CRAMT=0)T(#DBAMT=0)@                  !清值
+#CRAMT   S 12.21    Pj(#OCRDB=0,E{#OTXAMT}E{0})               !提款
+#DBAMT   S 12.21    Pj(#OCRDB=1,E{#OTXAMT}E{0})               !存款
+#DUMY    N  0  1    Pp(2,02:VP,03:VP,,,04:VP)T($HED=1)@       !表頭處理
+#TEMP    N  1  1    P@                                        !報表處理
+#FOOT1   X  4  1    PT(主管)                                  !字樣
+#FOOT2   X  2  1    PT(經)                                    !字樣
+#FOOT3   X  4  1    PT(人員)                                  !字樣
+#FOOT4   X  2  1    PT(辦)                                    !字樣
+!=========== TAIL ==============
+#PAGENO  N  2  1    PE(#PAGENO+1)@                            !頁次加一
+#PAGE    X  8  1    PT(第 +#PAGENO+ 頁)p(3)                   !頁次
+#TTLPAGE X  8  1    PT(共 +#PAGENO+ 頁)p(3)                   !共頁次
+#GAMT1   S 13.21    PE(#GAMT1+#CRAMT)@                        !總提款金額相加
+#GAMT1X  S 13.21    PT(#GAMT1X=#GAMT1)p(3)@T(#GAMT1=S)        !總提款金額輸出
+#GAMT2   S 13.21    PE(#GAMT2+#DBAMT)@                        !總存款金額相加
+#GAMT2X  S 13.21    PT(#GAMT2X=#GAMT2)p(3)@T(#GAMT2=S)        !總存款金額輸出
+#INIT1   N  1  1    PT(#PAGENO=S)T(#GAMT1=S)T(#GAMT2=S)@      !頁計總計清值
+!!!!!!!ADD FOR 24 HOURS 
+#HTXSEQ  X  1  1    ST($HTXSEQ=$TXSEQ)         !交易傳輸序號
+#VER     A  2  1    ST($VER=03)                !版本
+#TRANCDS X  1  1    ST($TRANCD=DI)             !TRANSACTION CODE
+#WSTYPE  X  1  1    ST($WSTYPE=0)              !工作站種類
+#APTYPEA X  1  1    ST($APTYPE=P)              !業務大類
+#APCODE  X  2  1    ST($APCODE=00)             !交易代號
+#STXNO   X  2  1    ST($STXNO=07)              !次交易代號
+#PTYPE   X  1  1    ST($PTYPE=0)               !PROCESS TYPE
+#DSCPT   X  1  1    ST($DSCPT=S07  )           !摘要
+#ACNOS   X 14  1    ST($ACNO=#ACTNO+  )        !帳號
+#TXTYPE  X  1  1    ST($TXTYPE=  )             !帳務別
+#CRDB    A  1  1    ST($CRDB= )                !借貸別
+#NBCD    A  1  1    ST($NBCD)                  !無摺記號
+#CURRCDX X  1  1    ST($CURR=0)                !幣別
+#TXAMTS  N 11.21    ST($AMT=0)                 !金額
+<<<<<<...
+"$TIM_LBL
+ #INQBGT#INQEDT#FILLER#RETURN"
+"P01001#BOXCNT%LOP#DATE#TXTIME#OBRNO#OWSNO#OTLRNO#ODSCPT#OTXAMT#OCRDB#OHCODE#OCKNO#OAVBAL#DSPTYPE#DSPTKD#DSPTEXT#OPBRNO#OPACTNO#INIT%BAK"
+"002$HED=0P0007000A4 SIZE N523#TEMP%NRJ^|"
+"003$HED=0P0007001A4 SIZE N523#DUMY#PAGENO#PAGE$KINBR$WSNO4$TLRNO$SUPNO$DATE#ACTNO#INQBGT#INQEDT#RNAME%NRJ^|"
+"000#000=9P0007002A4 SIZE N523%LOP#DATE#OBRNO#OWSNO#CRAMT#DBAMT#OAVBAL#GAMT1#GAMT2#OPBRNO#OPACTNO#CHIMEMO#DSPTXTP%BAK%NRJ^|"
+"000$CONTINU=1P0007003A4 SIZE N523#TTLPAGE#GAMT1X#GAMT2X#FOOT1#FOOT2#FOOT3#FOOT4^"
+"P0007000","
+00"
+"P0007001","
+01                                                                      ########
+02              臺 灣 銀 行    客 戶 往 來 明 細 查 詢 單               P00-07
+03              =========================================
+04
+05 櫃台機  櫃員  主管  日    期   帳        號  摘 要   查詢起日   查詢止日
+06  編號   編號  卡號
+07#######   ##    ##   ########   ############   S07  ####/##/## ####/##/##
+08
+09 戶    名:######################################################
+10
+11 交易日期   原櫃號        提     取           存     入           結     餘
+12  對方行   對方帳號       摘     要      
+13=============================================================================="
+"P0007002","
+00####.##.## #######  ###,###,###,###.##  ###,###,###,###.##  ###,###,###,###.##
+00   ### ################  ##########################"
+"P0007003","
+00                                                                      ########
+00
+00                合計：  提取 : #,###,###,###,###.##  存入 : #,###,###,###,###.##
+00
+00                                                   ####            ##
+00                                                   ####            ##"

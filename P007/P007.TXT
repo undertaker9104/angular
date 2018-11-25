@@ -1,0 +1,48 @@
+P0007
+{
+	"header": {
+		"txnId": "P0007",
+		"txnName": "這是個測試"
+	},
+	"detailList": [{
+			"DATE": "2018/08/27",
+			"OBRNO": "000",
+			"ODSCPT": "TEST",
+			"OTXAMT": "16816800",
+			"OCRDB": "1",
+			"OHCODE": "0",
+			"OCKNO": "1234500",
+			"OTLRNO": "01",
+			"OAVBAL": "88888800",
+			"TXTIME": "13:52:47",
+			"OWSNO": "0168",
+			"INIT": "0",
+			"OPBRNO": "001",
+			"OPACTNO": "8221832552362500",
+			"DSPTYPE": null,
+			"DSPTEXT": null,
+			"DSPTKD": null
+		}, {
+			"DATE": "2018/08/27",
+			"OBRNO": "001",
+			"ODSCPT": "TEST",
+			"OTXAMT": "16816801",
+			"OCRDB": "1",
+			"OHCODE": "0",
+			"OCKNO": "1234501",
+			"OTLRNO": "01",
+			"OAVBAL": "88888801",
+			"TXTIME": "13:52:47",
+			"OWSNO": "0168",
+			"INIT": "0",
+			"OPBRNO": "001",
+			"OPACTNO": "8221832552362501",
+			"DSPTYPE": null,
+			"DSPTEXT": null,
+			"DSPTKD": null
+		}
+	],
+	"boxcnt": "2"
+}
+
+

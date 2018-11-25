@@ -1,5 +1,4 @@
 import { Component, OnInit , Output} from '@angular/core';
-import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-c1',

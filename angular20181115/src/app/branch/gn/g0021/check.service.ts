@@ -53,7 +53,7 @@ export class CheckService {
  /**檢查是否為空**/
   private checkEmpty(field: string, value: string): string {
     if (!value) {
-      return field + '不可為空';
+      return field + '不可為空 ';
     }
     return '';
   }

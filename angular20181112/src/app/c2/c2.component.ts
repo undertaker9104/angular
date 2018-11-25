@@ -26,6 +26,11 @@ export class C2Component implements OnInit {
 
   clickHandle() {
     alert(this.id);
+    if (this.id === '' && this.name === '') {
+      this.customers = CUSTOMERS;
+    } else {
+      this.customers = CUSTOMERS.filter(customer => customer.id.includes(this.id) && customer.name.includes(this.name));
+    }
   }
 
 
